@@ -63,7 +63,8 @@ public class app extends JFrame{
 //	String gifPath = "./src/main/resources/images/Spinner100.gif";
 //	String gifPath=  "/com.agingTool/src/main/resources/images/Spinner100.gif";
 	String gifPath="C:\\Users\\shubh\\Desktop\\Aging-Tool\\src\\main\\resources\\images\\Spinner100.gif";
-    ImageIcon gifIcon = new ImageIcon(getClass().getResource(gifPath));
+//    ImageIcon gifIcon = new ImageIcon(app.class.getResource(gifPath));
+	ImageIcon gifIcon = new ImageIcon(gifPath);
     JLabel gifLabel=new JLabel();
     JPanel panel = new JPanel();
     
@@ -118,7 +119,7 @@ public class app extends JFrame{
 //		loader.setLocationRelativeTo(this.getFrames()[0]);
 		
 		panel.setLayout(new BorderLayout());
-		gifLabel.setIcon(gifIcon);
+//		gifLabel.setIcon(gifIcon);
 	    panel.add(gifLabel, BorderLayout.CENTER);
 //	    int centerX = panel.getWidth() / 2;
 //        int centerY = panel.getHeight() / 2;
@@ -268,6 +269,7 @@ public class app extends JFrame{
 
 		JLabel lblAccount = new JLabel("");
 //		lblAccount.setIcon(new ImageIcon(app.class.getResource("/images/415x215.png")));
+		lblAccount.setIcon(new ImageIcon("src/main/resources/images/415x215.png"));
 		lblAccount.setBounds(449, 51, 415, 229);
 		contentPane.add(lblAccount);
 
@@ -469,11 +471,12 @@ public class app extends JFrame{
 		
 		JLabel lblDB = new JLabel("");
 //		lblDB.setIcon(new ImageIcon(app.class.getResource("/images/p2.JPG")));
+		lblDB.setIcon(new ImageIcon("src/main/resources/images/p2.JPG"));
 		lblDB.setBounds(114, 51, 325, 229);
 		contentPane.add(lblDB);
 		
 		JLabel lblNewLabel_3 = new JLabel("");
-		lblNewLabel_3.setIcon(new ImageIcon(app.class.getResource("/images/p2.png")));
+		lblNewLabel_3.setIcon(new ImageIcon("/src/main/resources/images/p2.png"));
 		lblNewLabel_3.setBounds(0, 0, 1014, 646);
 		contentPane.add(lblNewLabel_3);
 		

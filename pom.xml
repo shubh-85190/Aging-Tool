@@ -4,7 +4,13 @@
   <artifactId>com.agingTool</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <dependencies>
-  	
+  	<!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+<dependency>
+    <groupId>com.microsoft.sqlserver</groupId>
+    <artifactId>mssql-jdbc</artifactId>
+    <version>12.7.0.jre8-preview</version>
+</dependency>
+
   </dependencies>
   <resources>
         <resource>
@@ -14,4 +20,6 @@
             </includes>
         </resource>
     </resources>
+    
+    
 </project>
