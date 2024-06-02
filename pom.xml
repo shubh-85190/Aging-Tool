@@ -6,4 +6,12 @@
   <dependencies>
   	
   </dependencies>
+  <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*.gif</include>
+            </includes>
+        </resource>
+    </resources>
 </project>

@@ -88,12 +88,12 @@ public class DBConnection
 	public String getCurrentDate(String dbname) throws Exception {
 		try {
 		Statement stmt = conn.createStatement();		
-        ResultSet rs= stmt.executeQuery("SELECT DISTINCT accountnumber FROM "+dbname+"..coreauthtransactions with(nolock) where Txnsource=17 and accountnumber is not null");
+        ResultSet rs= stmt.executeQuery("SELECT top 1 tnpdate as TNPDATE FROM "+dbname+"..commontnp with(nolock) where atid=60 order by tnpdate");
         rs.getStatement();
         //int i=1;
         String currentDate;
         while(rs.next()) {
-        	 currentDate=rs.getString(1);
+        	 currentDate=rs.getString("tnpdate");
         }
         
         return currentDate;

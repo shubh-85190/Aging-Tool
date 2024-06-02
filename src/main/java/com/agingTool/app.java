@@ -2,6 +2,7 @@ package com.agingTool;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dialog.ModalityType;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -10,6 +11,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -28,9 +32,15 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 public class app extends JFrame{
 
@@ -50,8 +60,10 @@ public class app extends JFrame{
 	private JTextField txtKMS;
 	private JDialog loader;
 	
-	String gifPath = "/images/spinner100.gif";
-    ImageIcon gifIcon = new ImageIcon(app.class.getResource(gifPath));
+//	String gifPath = "./src/main/resources/images/Spinner100.gif";
+//	String gifPath=  "/com.agingTool/src/main/resources/images/Spinner100.gif";
+	String gifPath="C:\\Users\\shubh\\Desktop\\Aging-Tool\\src\\main\\resources\\images\\Spinner100.gif";
+    ImageIcon gifIcon = new ImageIcon(getClass().getResource(gifPath));
     JLabel gifLabel=new JLabel();
     JPanel panel = new JPanel();
     
@@ -190,14 +202,6 @@ public class app extends JFrame{
 		tableTransactions = new JTable(model);
 		tableTransactions.setFont(new Font("Times New Roman", Font.PLAIN, 15));
 		tableTransactions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-//		tableTransactions.getColumnModel().getColumn(0).setPreferredWidth(30);
-//		tableTransactions.getColumnModel().getColumn(1).setPreferredWidth(15);
-//		tableTransactions.getColumnModel().getColumn(2).setPreferredWidth(10);
-//		tableTransactions.getColumnModel().getColumn(3).setPreferredWidth(5);
-//		tableTransactions.getColumnModel().getColumn(4).setPreferredWidth(10);
-//		tableTransactions.getColumnModel().getColumn(5).setPreferredWidth(10);
-//		tableTransactions.getColumnModel().getColumn(6).setPreferredWidth(10);
-//		tableTransactions.getColumnModel().getColumn(6).setPreferredWidth(20);
 
 		cellRenderer = new DefaultTableCellRenderer();
 		cellRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -208,20 +212,6 @@ public class app extends JFrame{
 		tableTransactions.getColumnModel().getColumn(4).setCellRenderer(cellRenderer);
 		tableTransactions.getColumnModel().getColumn(5).setCellRenderer(cellRenderer);
 		tableTransactions.getColumnModel().getColumn(6).setCellRenderer(cellRenderer);
-
-//		tableTransactions.setModel(new DefaultTableModel(
-//			new Object[][] {
-//			},
-//			new String[] {
-//				"TraceID", "RetrievalReferenceNumber", "SystemTraceAuditNumber", "MessageTypeIdentifier", "ProcCode", "ApprovalCode", "DateLocalTransaction"
-//			}
-//		));
-//		tableTransactions.getColumnModel().getColumn(1).setPreferredWidth(152);
-//		tableTransactions.getColumnModel().getColumn(2).setPreferredWidth(141);
-//		tableTransactions.getColumnModel().getColumn(3).setPreferredWidth(126);
-//		tableTransactions.getColumnModel().getColumn(5).setPreferredWidth(90);
-//		tableTransactions.getColumnModel().getColumn(6).setPreferredWidth(114);
-//		tableTransactions.setRowSelectionAllowed(false);
 		tableTransactions.setBounds(10, 327, 674, 211);
 		contentPane.add(tableTransactions);
 
@@ -263,70 +253,9 @@ public class app extends JFrame{
 		btnUnselectAll.setBounds(260, 589, 142, 29);
 		contentPane.add(btnUnselectAll);
 
-		JButton btnFetchTransactions = new JButton("Fetch Transactions");
-		btnFetchTransactions.setEnabled(false);
-		btnFetchTransactions.setBounds(532, 226, 202, 29);
-		contentPane.add(btnFetchTransactions);
-		btnFetchTransactions.setForeground(new Color(255, 255, 255));
-		btnFetchTransactions.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-					@Override
-					protected Void doInBackground() throws Exception {
-//						showLoader();
-				String accountNumber = comboAccounts.getSelectedItem().toString();
-				kmsServer = txtKMS.getText();
 
-				try {
-					ArrayList<String[]> txns = db.getTransactionList(accountNumber, dbname, kmsServer);
-					if(txns==null)
-					{
-						JOptionPane.showMessageDialog(frame, "Account Does not have transactions or KMS is down.", "Error Occured",JOptionPane.ERROR_MESSAGE);
-						return null;
-					}
-					
-					System.out.println(txns.size());
-					for (int i = 0; i < txns.size(); i++) {
-						Object[] newRowData = new Object[txns.get(i).length];
-						System.out.println(txns.get(i).length);
-						for (int j = 0; j < txns.get(i).length; j++) {
-							newRowData[j] = txns.get(i)[j]; // txns.get(i)[j];
-							System.out.println(txns.get(i)[j]);
-						}
-						if (transactions.indexOf(txns.get(i)) < 0) {
-							model.addRow(newRowData);
-							transactions.add(txns.get(i));
-						}
-					}
-					
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-					return null;
-				}
-				@Override
-				protected void done() {
-					loader.setVisible(false);
-				}
-			};
-			worker.execute();
-			showLoader();
-		}});
-		btnFetchTransactions.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
-		btnFetchTransactions.setBackground(new Color(102, 205, 170));
 
-		JButton btnFetchAccounts = new JButton("Fetch Accounts from DB");
-		btnFetchAccounts.setEnabled(false);
-		btnFetchAccounts.setBounds(532, 105, 256, 31);
-		contentPane.add(btnFetchAccounts);
-		btnFetchAccounts.setForeground(new Color(255, 255, 255));
-
-		btnFetchAccounts.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
-		btnFetchAccounts.setBackground(new Color(102, 205, 170));
-
-		JLabel lblDbName = new JLabel("CoreAuth DB Name :");
+		JLabel lblDbName = new JLabel("CoreIssue DB Name :");
 		lblDbName.setForeground(new Color(255, 255, 255));
 		lblDbName.setBounds(459, 59, 174, 35);
 		contentPane.add(lblDbName);
@@ -402,19 +331,6 @@ public class app extends JFrame{
 		lblNewLabel_1.setBounds(306, 11, 406, 34);
 		contentPane.add(lblNewLabel_1);
 
-		JLabel lblDbName_1_1_1 = new JLabel("Settelment Date  (YYMMDD) :");
-		lblDbName_1_1_1.setForeground(new Color(255, 255, 255));
-		lblDbName_1_1_1.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		lblDbName_1_1_1.setBounds(133, 266, 250, 36);
-		contentPane.add(lblDbName_1_1_1);
-
-		txtSettelmentDate = new JTextField();
-		txtSettelmentDate.setHorizontalAlignment(SwingConstants.CENTER);
-		txtSettelmentDate.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(0, 153, 0)));
-		txtSettelmentDate.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		txtSettelmentDate.setColumns(10);
-		txtSettelmentDate.setBounds(378, 267, 102, 36);
-		contentPane.add(txtSettelmentDate);
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
@@ -439,18 +355,14 @@ public class app extends JFrame{
 							if(dbnames.isEmpty())
 							{
 								loader.setVisible(false);
-								JOptionPane.showMessageDialog(frame,"No DB found with \"auth\" in it's Name");
+								JOptionPane.showMessageDialog(frame,"No DB found with \"CI\" in it's Name");
 								return null;
 							}
 							for (int i = 0; i < dbnames.size(); i++) {
-								if (dbnames.get(i).contains("auth"))
+								if (dbnames.get(i).contains("CI"))
 									comboCAuthDB.addItem(dbnames.get(i));
 							}
-							if (comboCAuthDB.getItemCount() > 0) {
-								btnFetchAccounts.setEnabled(true);
-							} else {
-								btnFetchAccounts.setEnabled(false);
-							}
+							
 
 //					System.out.println(dbnames.toString());
 						} catch (ClassNotFoundException | SQLException e1) {
@@ -509,57 +421,7 @@ public class app extends JFrame{
 
 			}
 		});
-		btnFetchAccounts.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-					@Override
-					protected Void doInBackground() throws Exception {
-//						loader.setVisible(true);
 
-						comboAccounts.removeAllItems();
-						dbname = comboCAuthDB.getSelectedItem().toString();
-						try {
-							ArrayList<String> accountList = db.getAccountList(dbname);
-							if(accountList==null)
-							{
-								loader.setVisible(false);
-								JOptionPane.showMessageDialog(frame, "Error fetching accounts, Please check Database is accessible.","Error",JOptionPane.ERROR_MESSAGE );
-								return null;
-							}
-							if(accountList.isEmpty())
-							{
-								loader.setVisible(false);
-								JOptionPane.showMessageDialog(frame, "No account found with transaction for VISA.","Error",JOptionPane.ERROR_MESSAGE );
-								return null;
-							}
-							
-							for (int i = 0; i < accountList.size(); i++) {
-								if(!(accountList.get(i)==null))
-									comboAccounts.addItem(accountList.get(i));
-							}
-							if (comboAccounts.getItemCount() > 0) {
-								btnFetchTransactions.setEnabled(true);
-							} else {
-								btnFetchTransactions.setEnabled(false);
-							}
-						} catch (Exception e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-
-						autofitColumns(tableTransactions);
-						return null;
-					}
-
-					@Override
-					protected void done() {
-						loader.setVisible(false);
-					}
-				};
-				worker.execute();
-				showLoader();
-			}
-		});
 
 //		scrollPane.
 //		Object[] obj= new String[] {
@@ -674,78 +536,16 @@ public class app extends JFrame{
 //				btnGenerateFile.setEnabled(false);
 				btnUnselectAll.setEnabled(false);
 			}
-		});
-		btnSelectAll.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tableTransactions.selectAll();
-				btnSelectAll.setEnabled(false);
-				btnGenerateFile.setEnabled(true);
-				btnUnselectAll.setEnabled(true);
-			}
-		});
-		btnGenerateFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ArrayList<String[]> selectedItems = new ArrayList<String[]>();
-				String settelmentDate = txtSettelmentDate.getText();
-				int sdate;
-				try {
-					sdate=Integer.parseInt(settelmentDate);
-					System.out.println(sdate);
-				}
-				catch(Exception exc)
-				{
-					JOptionPane.showMessageDialog(frame, "Please Enter valid Settlement Date.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				if(settelmentDate.length()!=6 
-						|| Integer.parseInt(settelmentDate.substring(2,4))>12 
-						|| Integer.parseInt(settelmentDate.substring(4,6))>31
-						|| Integer.parseInt(settelmentDate.substring(2,4))<=0
-						|| Integer.parseInt(settelmentDate.substring(4,6))<=0)
-				{
-					JOptionPane.showMessageDialog(frame, "Please Enter valid Settlement Date.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				int[] arr = tableTransactions.getSelectedRows();
-				for (int i = 0; i < arr.length; i++) {
-					System.out.println("Selected items : " + arr[i]);
-					selectedItems.add(transactions.get(arr[i]));
-//					System.out.println("Item added in records : "+transactions.get(i).toString());
-				}
-				CreateFile obj = new CreateFile(settelmentDate, selectedItems,comboFileType.getSelectedIndex());
-				if(obj.filename==null)
-				{
-					JOptionPane.showMessageDialog(frame, "Error in creating File.", "Error", JOptionPane.ERROR_MESSAGE);
-				}
-				else
-				{
-					JOptionPane.showMessageDialog(frame, "File created with Name : "+obj.filename, "File Creation Success", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
+		});}
+//		btnSelectAll.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				tableTransactions.selectAll();
+//				btnSelectAll.setEnabled(false);
+//				btnGenerateFile.setEnabled(true);
+//				btnUnselectAll.setEnabled(true);
+//			}
+//		});
 
-		tableTransactions.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent event) {
-				// do some actions here, for example
-				// print first column value from selected row
-				if (tableTransactions.getRowCount() == 0) {
-					btnClearAll.setEnabled(false);
-					btnSelectAll.setEnabled(false);
-				} else {
-					btnClearAll.setEnabled(true);
-					btnSelectAll.setEnabled(true);
-				}
-				if (tableTransactions.getSelectedRow() == -1) {
-					btnUnselectAll.setEnabled(false);
-					btnGenerateFile.setEnabled(false);
-				} else {
-					btnUnselectAll.setEnabled(true);
-					btnGenerateFile.setEnabled(true);
-				}
-				System.out.println("Row Selected " + tableTransactions.getSelectedRows().length);
-			}
-		});
-	}
 
 	public static void autofitColumns(JTable table) {
 		final TableColumnModel columnModel = table.getColumnModel();
